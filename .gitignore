@@ -1,0 +1,12 @@
+# Environments
+.env
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Project Specific
+documents/
+.DS_Store
