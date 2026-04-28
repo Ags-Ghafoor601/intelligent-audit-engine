@@ -203,9 +203,29 @@ with st.sidebar:
     col2.metric("Pages Indexed", f"{st.session_state.doc_count}", "Ready")
     
     st.divider()
+    st.write("📂 **Document Upload**")
+    
+    # NEW: Streamlit File Uploader
+    uploaded_file = st.file_uploader("Upload a PDF to audit", type=["pdf"])
+    
+    if uploaded_file:
+        # Save the uploaded file temporarily so PyMuPDF can read it
+        if not os.path.exists("./documents"):
+            os.makedirs("./documents")
+        temp_file_path = os.path.join("./documents", uploaded_file.name)
+        with open(temp_file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success(f"Uploaded: {uploaded_file.name}")
+        
+    st.divider()
     st.write("🚀 **Pipeline Controls**")
+    
     if st.button("Initialize Pipeline"):
-        create_vector_embeddings()
+        # Check if the folder has files or if a new file was uploaded
+        if not uploaded_file and (not os.path.exists("./documents") or not [f for f in os.listdir("./documents") if f.endswith(".pdf")]):
+            st.error("Please upload a PDF first!")
+        else:
+            create_vector_embeddings()
 
     if st.button("Wipe Memory Logs"):
         st.session_state.chat_history = []
