@@ -148,46 +148,46 @@ if "doc_count" not in st.session_state:
 
 # --- 4. HYBRID PIPELINE WITH ROBUST ERROR HANDLING ---
 def create_vector_embeddings():
-    if "faiss_retriever" not in st.session_state:
-        with st.status("Initializing Quantum Data Pipeline...", expanded=True) as status:
-            st.write("📂 Extracting metadata and parsing layouts...")
-            
-            # PATCH A: Auto-create directory if missing to prevent crashes
-            if not os.path.exists("./documents"):
-                os.makedirs("./documents")
-                status.update(label="Created 'documents' folder. Please add PDFs and try again.", state="error", expanded=False)
-                return
-            
-            docs = []
-            for file in os.listdir("./documents"):
-                if file.endswith(".pdf"):
-                    file_path = os.path.join("./documents", file)
-                    loader = PyMuPDFLoader(file_path)
-                    docs.extend(loader.load())
-            
-            if not docs:
-                status.update(label="No PDFs found in the 'documents' directory.", state="error", expanded=False)
-                return
+    # Session state lock removed to allow dynamic rebuilding upon new uploads
+    with st.status("Initializing Quantum Data Pipeline...", expanded=True) as status:
+        st.write("📂 Extracting metadata and parsing layouts...")
+        
+        # PATCH A: Auto-create directory if missing to prevent crashes
+        if not os.path.exists("./documents"):
+            os.makedirs("./documents")
+            status.update(label="Created 'documents' folder. Please add PDFs and try again.", state="error", expanded=False)
+            return
+        
+        docs = []
+        for file in os.listdir("./documents"):
+            if file.endswith(".pdf"):
+                file_path = os.path.join("./documents", file)
+                loader = PyMuPDFLoader(file_path)
+                docs.extend(loader.load())
+        
+        if not docs:
+            status.update(label="No PDFs found in the 'documents' directory.", state="error", expanded=False)
+            return
 
-            st.session_state.doc_count = len(docs)
-            st.write("✂️ Chunking documents...")
-            st.session_state.text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-            final_documents = st.session_state.text_splitter.split_documents(docs)
-            
-            st.write("🧠 Building Semantic Engine (FAISS)...")
-            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-            vectorstore = FAISS.from_documents(final_documents, embeddings)
-            st.session_state.faiss_retriever = vectorstore.as_retriever(search_kwargs={"k": 15})
-            
-            st.write("🔍 Building Keyword Engine (BM25)...")
-            st.session_state.bm25_retriever = BM25Retriever.from_documents(final_documents)
-            st.session_state.bm25_retriever.k = 15
-            
-            st.write("⚖️ Initializing Cross-Encoder Re-ranker...")
-            st.session_state.reranker_model = HuggingFaceCrossEncoder(model_name="cross-encoder/ms-marco-MiniLM-L-6-v2")
-            
-            status.update(label="Enterprise Pipeline Online", state="complete", expanded=False)
-            st.toast("System is ready for querying.", icon="✅")
+        st.session_state.doc_count = len(docs)
+        st.write("✂️ Chunking documents...")
+        st.session_state.text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        final_documents = st.session_state.text_splitter.split_documents(docs)
+        
+        st.write("🧠 Building Semantic Engine (FAISS)...")
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        vectorstore = FAISS.from_documents(final_documents, embeddings)
+        st.session_state.faiss_retriever = vectorstore.as_retriever(search_kwargs={"k": 15})
+        
+        st.write("🔍 Building Keyword Engine (BM25)...")
+        st.session_state.bm25_retriever = BM25Retriever.from_documents(final_documents)
+        st.session_state.bm25_retriever.k = 15
+        
+        st.write("⚖️ Initializing Cross-Encoder Re-ranker...")
+        st.session_state.reranker_model = HuggingFaceCrossEncoder(model_name="cross-encoder/ms-marco-MiniLM-L-6-v2")
+        
+        status.update(label="Enterprise Pipeline Online", state="complete", expanded=False)
+        st.toast("System is ready for querying.", icon="✅")
 
 # --- 5. SIDEBAR DASHBOARD ---
 with st.sidebar:
@@ -205,7 +205,7 @@ with st.sidebar:
     st.divider()
     st.write("📂 **Document Upload**")
     
-    # NEW: Streamlit File Uploader
+    # Streamlit File Uploader
     uploaded_file = st.file_uploader("Upload a PDF to audit", type=["pdf"])
     
     if uploaded_file:
