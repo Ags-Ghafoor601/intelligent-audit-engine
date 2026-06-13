@@ -24,7 +24,7 @@ Standard RAG systems suffer from keyword blindness and contextual hallucinations
 ## ⚙️ Installation & Setup
 
 **1. Clone the repository**<br>
-git clone [https://github.com/yourusername/intelligent-audit-engine.git](https://github.com/yourusername/intelligent-audit-engine.git)
+git clone [https://github.com/Ags-Ghafoor601/intelligent-audit-engine.git](https://github.com/Ags-Ghafoor601/intelligent-audit-engine.git)
 <br>cd intelligent-audit-engine
 
 **2. Create a virtual environment and install dependencies**
