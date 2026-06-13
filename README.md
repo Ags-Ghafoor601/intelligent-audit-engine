@@ -24,23 +24,24 @@ Standard RAG systems suffer from keyword blindness and contextual hallucinations
 ## ⚙️ Installation & Setup
 
 **1. Clone the repository**<br>
-git clone [https://github.com/Ags-Ghafoor601/intelligent-audit-engine.git](https://github.com/Ags-Ghafoor601/intelligent-audit-engine.git)
-<br>cd intelligent-audit-engine
+`git clone` [https://github.com/Ags-Ghafoor601/intelligent-audit-engine.git](https://github.com/Ags-Ghafoor601/intelligent-audit-engine.git)
+<br>`cd intelligent-audit-engine`
 
 **2. Create a virtual environment and install dependencies**
 
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-pip install -r requirements.txt
+`python -m venv venv`<br>
+`source venv/bin/activate`
+<br># On Windows use: `venv\Scripts\activate`<br>
+`pip install -r requirements.txt`
 
 **3. Configure Environment Variables**
 
-Create a .env file in the root directory and add your Groq API key:
-GROQ_API_KEY=your_actual_api_key_here
+Create a .env file in the root directory and add your Groq API key:<br>
+`GROQ_API_KEY=your_actual_api_key_here`
 
 **4. Run the Engine**
 
-streamlit run app.py
+`streamlit run app.py`
 
 📂 Usage
 1. Launch the application.
